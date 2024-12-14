@@ -3,6 +3,8 @@ import Chat from './components/Chat'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View, } from 'react-native';
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
 /* Creates navigation between and a stack of the two components Start and Chat */
 
