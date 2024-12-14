@@ -40,11 +40,16 @@ const Start = ({ navigation }) => {
           />
         </View>
         <Button
+          accessible={true}
+          accessibilityLabel="To Chat Screen"
+          accessibilityHint="Submits username and background color and takes you to the chat screen"
+          accessibilityRole="button"
           style={styles.startButton}
           title="Start Chatting"
           onPress={() => navigation.navigate('Chat', { name: name, color: color })}
         />
       </ImageBackground>
+      {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior="padding" /> : null}
     </View>
   );
 }
