@@ -1,18 +1,20 @@
 import { StyleSheet, View, Text, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { orderBy } from 'firebase/firestore';
 
 /* Takes color and name from Start.js, sets the title as name and set the background color as color. */
 
 let color;
 
-const Chat = ({ route, navigation }) => {
+const Chat = ({ route, navigation, db }) => {
   const { name } = route.params.name;
+  const { userID } = route.params.userID
   const [messages, setMessages] = useState('');
 
-  /* Appends sent messages to messages */
+  /* Appends sent messages to messages in firebase */
   const onSend = (newMessage) => {
-    setMessages(previousMessage => GiftedChat.append(previousMessages, newMessages))
+    addDoc(collection(db, "messages"), newMessages[0])
   };
 
   /* Sets the color for the sent and recieved messages */
@@ -30,31 +32,25 @@ const Chat = ({ route, navigation }) => {
     />
   }
 
+  /* Sets the title and bg color, grabs messages in real time */
   useEffect(() => {
     navigation.setOptions({ title: name });
     color = route.params.color;
-  }, []);
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    const unsubChat = onSnapshot(q, (docs) => {
+      let newMessages = [];
+      docs.forEach(doc => {
+        newMessages.push({
+          id: doc.id, ...doc.data(), createdAt: new Date(doc.data().createdAt.toMillis())
+        })
+      })
+      setMessages(newMessages);
+    })
 
-  /* Starts the view with a system message and a welcome message */
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "https://placeimg.com/140/140/any"
-        },
-      },
-      {
-        _id: 2,
-        text: 'This is a system message',
-        createdAt: new Date(),
-        system: true,
-      },
-    ])
+    return () => {
+      if (unsubChat) unsubChat();
+    }
+
   }, []);
 
   return (
@@ -63,7 +59,7 @@ const Chat = ({ route, navigation }) => {
         messages={messages}
         renderBubble={renderBubble}
         onSend={messages => onSend(messages)}
-        user={{ _id: 1 }}
+        user={{ _id: userID, name: name }}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>

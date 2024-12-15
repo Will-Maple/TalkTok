@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View, Button, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
+import { getAuth, signInAnonymously } from "firebase/auth";
+
 
 const img = '../assets/BGimg.png'
 const bg1 = "#090C08",
@@ -10,6 +12,20 @@ const bg1 = "#090C08",
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');
   const [color, setColor] = useState('');
+
+  /* Logs user in Anonymously on Firebase*/
+  const auth = getAuth();
+  const signInUser = () => {
+    signInAnonymously(auth)
+      .then(result => {
+        navigation.navigate('Chat', { name: name, color: color, userID: result.user.uid });
+        Alert.alert("Signed in Successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Unable to sign in, try later again.");
+      })
+  }
+
   /* Returns a view with an imagebackground, a title... then a text input and series of color buttons that take a username and a background color... when submitted they open the 2nd screen passing the name and bg color*/
   return (
     <View style={styles.container}>
@@ -46,7 +62,7 @@ const Start = ({ navigation }) => {
           accessibilityRole="button"
           style={styles.startButton}
           title="Start Chatting"
-          onPress={() => navigation.navigate('Chat', { name: name, color: color })}
+          onPress={signInUser}
         />
       </ImageBackground>
       {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior="padding" /> : null}
