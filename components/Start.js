@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 
 const img = '../assets/BGimg.png'
@@ -24,19 +24,19 @@ const Start = ({ navigation }) => {
         <View style={styles.colorTOContainer}>
           <TouchableOpacity
             style={[styles.colorTO, styles.TO1]}
-            onPress={setColor(bg1)}
+            onPress={() => setColor(bg1)}
           />
           <TouchableOpacity
             style={[styles.colorTO, styles.TO2]}
-            onPress={setColor(bg2)}
+            onPress={() => setColor(bg2)}
           />
           <TouchableOpacity
             style={[styles.colorTO, styles.TO3]}
-            onPress={setColor(bg3)}
+            onPress={() => setColor(bg3)}
           />
           <TouchableOpacity
             style={[styles.colorTO, styles.TO4]}
-            onPress={setColor(bg4)}
+            onPress={() => setColor(bg4)}
           />
         </View>
         <Button
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '300',
     color: '#757083',
-    opacity: '100%'
+    opacity: 1
   },
   colorTOContainer: {
     alignItems: 'left'
@@ -89,16 +89,16 @@ const styles = StyleSheet.create({
     borderRadius: 25
   },
   TO1: {
-    backgroundColor: { bg1 }
+    backgroundColor: bg1
   },
   TO2: {
-    backgroundColor: { bg2 }
+    backgroundColor: bg2
   },
   TO3: {
-    backgroundColor: { bg3 }
+    backgroundColor: bg3
   },
   TO4: {
-    backgroundColor: { bg4 }
+    backgroundColor: bg4
   },
   startButton: {
     fontSize: 16,

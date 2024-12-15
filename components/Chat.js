@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
 
@@ -6,9 +6,9 @@ import { Bubble, GiftedChat } from "react-native-gifted-chat";
 
 let color;
 
-const Chat = (route, navigation) => {
+const Chat = ({ route, navigation }) => {
   const { name } = route.params.name;
-  const { messages, setMessages } = useState('');
+  const [messages, setMessages] = useState('');
 
   /* Appends sent messages to messages */
   const onSend = (newMessage) => {
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: { color }
+    backgroundColor: color
   }
 });
 
