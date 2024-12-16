@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView, Alert } from 'react-native';
 import { useState } from 'react';
 import { getAuth, signInAnonymously } from "firebase/auth";
 
@@ -55,15 +55,17 @@ const Start = ({ navigation }) => {
             onPress={() => setColor(bg4)}
           />
         </View>
-        <Button
+        <TouchableOpacity
           accessible={true}
           accessibilityLabel="To Chat Screen"
           accessibilityHint="Submits username and background color and takes you to the chat screen"
           accessibilityRole="button"
           style={styles.startButton}
-          title="Start Chatting"
           onPress={signInUser}
-        />
+        >
+          <Text style={styles.buttonText}>Start Chatting</Text>
+        </TouchableOpacity>
+
       </ImageBackground>
       {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior="padding" /> : null}
     </View>
@@ -96,8 +98,28 @@ const styles = StyleSheet.create({
     color: '#757083',
     opacity: 1
   },
+  img: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%'
+  },
   colorTOContainer: {
-    alignItems: 'left'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 40,
+    alignItems: 'center',
+  },
+  startButton: {
+    alignItems: 'center',
+    backgroundColor: '#757083',
+    padding: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
   },
   colorTO: {
     height: 50,

@@ -1,20 +1,17 @@
 import { StyleSheet, View, Text, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
-import { orderBy } from 'firebase/firestore';
+import { orderBy, query, collection, onSnapshot, addDoc } from 'firebase/firestore';
 
 /* Takes color and name from Start.js, sets the title as name and set the background color as color. */
 
-let color;
-
 const Chat = ({ route, navigation, db }) => {
-  const { name } = route.params.name;
-  const { userID } = route.params.userID
-  const [messages, setMessages] = useState('');
+  const { name, color, userID } = route.params;
+  const [messages, setMessages] = useState([]);
 
   /* Appends sent messages to messages in firebase */
   const onSend = (newMessage) => {
-    addDoc(collection(db, "messages"), newMessages[0])
+    addDoc(collection(db, "messages"), newMessage[0])
   };
 
   /* Sets the color for the sent and recieved messages */
@@ -35,7 +32,6 @@ const Chat = ({ route, navigation, db }) => {
   /* Sets the title and bg color, grabs messages in real time */
   useEffect(() => {
     navigation.setOptions({ title: name });
-    color = route.params.color;
     const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
     const unsubChat = onSnapshot(q, (docs) => {
       let newMessages = [];
@@ -54,7 +50,7 @@ const Chat = ({ route, navigation, db }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: color }]}>
       <GiftedChat
         messages={messages}
         renderBubble={renderBubble}
@@ -69,9 +65,6 @@ const Chat = ({ route, navigation, db }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: color
   }
 });
 

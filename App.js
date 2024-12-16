@@ -27,17 +27,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initailRouteName="Start"
+        initialRouteName="Start"
       >
         <Stack.Screen
           name="Start"
           component={Start}
         />
-        <Stack.Screen
-          name="Chat"
-        />
-        {props => <Chat db={db} {...props} />}
-        <Stack.Screen />
+        <Stack.Screen name="Chat">
+          {props => <Chat db={db} {...props} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
