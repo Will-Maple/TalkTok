@@ -5,13 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View, } from 'react-native';
 import { initializeApp } from "firebase/app";
 import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
-
+import { getStorage } from "firebase/storage";
 
 /* Creates navigation between and a stack of the two components Start and Chat */
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  /* Enter Credentials Here */
   const firebaseConfig = {
     apiKey: "AIzaSyDTgGztum0ZwuLeNx07-9RUOteAcBjhGeY",
     authDomain: "chat-app-cb5d3.firebaseapp.com",
@@ -24,6 +25,7 @@ export default function App() {
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const storage = getStorage(app);
   const connectionStatus = useNetInfo();
 
   /* Monitors internet connection, if connected tries to connect to Firebase*/
@@ -46,7 +48,11 @@ export default function App() {
           component={Start}
         />
         <Stack.Screen name="Chat">
-          {props => <Chat isConnected={connectionStatus.isConnected} db={db} {...props} />}
+          {props => <Chat
+            isConnected={connectionStatus.isConnected}
+            db={db}
+            storage={storage}
+            {...props} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
