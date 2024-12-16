@@ -7,8 +7,6 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, userID }) => {
-  const [image, setImage] = useState(null);
-  const [location, setLocation] = useState(null);
 
   const actionSheet = useActionSheet();
 
