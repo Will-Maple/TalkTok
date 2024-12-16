@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { orderBy, query, collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
 import MapView from 'react-native-maps';
@@ -65,6 +66,15 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
     return null;
   }
 
+  /* Uploads messages to the cache when called */
+  const cacheMessages = async (messagesToCache) => {
+    try {
+      await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   /* Sets messages to messages in the cache when called */
   const loadCachedMessages = async () => {
     const cachedMessages = await AsyncStorage.getItem("messages") || [];
@@ -105,9 +115,17 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
         renderInputToolbar={renderInputToolbar}
         renderActions={renderCustomActions}
         renderCustomView={renderCustomView}
-        onSend={messages => onSend(messages)}
-        user={{ _id: userID, name: name }}
-      />
+        onSend={(messages => {
+          onSend([{
+            ...messages,
+            id: uuidv4(),
+            createdAt: new Date(),
+            user: {
+              id: userID,
+              name: name
+            }
+          }])
+        })} {...props} />;
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
   );
