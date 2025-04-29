@@ -1,5 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
 import { StyleSheet, Alert } from 'react-native';
 import { initializeApp } from "firebase/app";
 import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
@@ -11,9 +14,9 @@ import Chat from './components/Chat'
 
 /* Creates navigation between and a stack of the two components Start and Chat */
 
-const Stack = createNativeStackNavigator();
-
 export default function App() {
+  /*const [image, setImage] = useState(null);*/
+
   /* Enter Credentials Here */
   const firebaseConfig = {
     apiKey: "AIzaSyDTgGztum0ZwuLeNx07-9RUOteAcBjhGeY",

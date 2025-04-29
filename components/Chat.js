@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Platform } from 'react-native';
+import { StyleSheet, View, Text, Platform, KeyboardAvoidingView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { orderBy, query, collection, onSnapshot, addDoc } from 'firebase/firestore';
@@ -15,7 +15,16 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
 
   /* Appends sent messages to messages in firebase */
   const onSend = (newMessage) => {
-    addDoc(collection(db, "messages"), newMessage[0])
+    console.log(newMessage)
+    addDoc(collection(db, "messages"), {
+      ...newMessage[0], 
+      _id: uuidv4(),
+      createdAt: new Date(),
+      user: {
+        _id: userID,
+        name
+      }
+    })
   };
 
   /* Sets the color for the sent and recieved messages */
@@ -40,7 +49,7 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
   }
 
   const renderCustomActions = (props) => {
-    return <CustomActions storage={storage} userID={userID} {...props} />;
+    return <CustomActions storage={storage} userID={userID} onSend={onSend} {...props} />;
   }
 
   const renderCustomView = (props) => {
@@ -113,19 +122,14 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
         messages={messages}
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
+        onSend={messages => onSend(messages)}
         renderActions={renderCustomActions}
         renderCustomView={renderCustomView}
-        onSend={(messages => {
-          onSend([{
-            ...messages,
-            id: uuidv4(),
-            createdAt: new Date(),
-            user: {
-              id: userID,
-              name: name
-            }
-          }])
-        })} {...props} />;
+        user={{
+          _id: userID,
+          name
+        }}
+     />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
   );

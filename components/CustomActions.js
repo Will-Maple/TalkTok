@@ -6,7 +6,7 @@ import MapView from 'react-native-maps';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, userID }) => {
+const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, userID, storage }) => {
 
   const actionSheet = useActionSheet();
 
@@ -16,8 +16,9 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, userID }) => {
     const response = await fetch(imageURI);
     const blob = await response.blob();
     uploadBytes(newUploadRef, blob).then(async (snapshot) => {
+      console.log('file has been uploaded')
       const imageURL = await getDownloadURL(snapshot.ref)
-      onSend({ image: imageURL })
+      onSend([{ image: imageURL }])
     });
   }
 
@@ -48,12 +49,12 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, userID }) => {
     if (permissions?.granted) {
       const location = await Location.getCurrentPositionAsync({});
       if (location) {
-        onSend({
+        onSend([{
           location: {
             longitude: location.coords.longitude,
             latitude: location.coords.latitude,
           },
-        });
+        }]);
       } else Alert.alert("Error occurred while fetching location");
     } else {
       Alert.alert("Permissions to read location aren't granted");
@@ -80,12 +81,15 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, userID }) => {
         switch (buttonIndex) {
           case 0:
             pickImage();
+            console.log('pick image');
             return;
           case 1:
             takePhoto();
+            console.log('pick photo');
             return;
           case 2:
             getLocation();
+            console.log('get location');
           default:
         }
       },
